@@ -1,11 +1,34 @@
-const request = require('request');
+const yargs = require('yargs');
 
-request({
-  url:'https://maps.googleapis.com/maps/api/geocode/json?address=481%20Governador%20Portela%20Nova%20Igua%C3%A7u',
-  json: true
-}, (error, response, body) => {
-  var address = JSON.stringify(body.results[0].formatted_address);
-  var latitude = body.results[0].geometry.location.lat;
-  var longitude = body.results[0].geometry.location.lng;
-  console.log(address+' | '+latitude+' | '+longitude);
+const geocode = require('./geocode/geocode');
+const forecast = require('./geocode/forecast');
+
+const argv = yargs
+  .options ({
+    a: {
+      demand: true,
+      alias: 'address',
+      describe: 'Address to fetch weather for',
+      string: true
+    }
+  })
+  .help('help','h')
+  .argv;
+
+geocode.geocodeAddress(argv.address, (errorMessage, results) => {
+  if (errorMessage) {
+    console.log(errorMessage);
+  } else {
+    console.log(`Endereço: ${results.address}`);
+    console.log(`Latitude: ${results.latitude}`);
+    console.log(`Longitude: ${results.longitude}`);
+  }
 });
+
+// forecast.getForecast(pos, (errorMessage, resultsForecast)) => {
+//   if (errorMessage) {
+//     console.log(errorMessage);
+//   } else {
+//     console.log(`Tempo: ${resultsforecast.forecast}`);
+//   }
+// });
