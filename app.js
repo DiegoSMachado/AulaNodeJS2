@@ -1,7 +1,7 @@
 const yargs = require('yargs');
 
 const geocode = require('./geocode/geocode');
-const forecast = require('./geocode/forecast');
+const weather = require('./weather/weather');
 
 const argv = yargs
   .options ({
@@ -22,13 +22,12 @@ geocode.geocodeAddress(argv.address, (errorMessage, results) => {
     console.log(`Endereço: ${results.address}`);
     console.log(`Latitude: ${results.latitude}`);
     console.log(`Longitude: ${results.longitude}`);
+    forecast.getWeather(results.latitude, results.longitude, (errorMessage, weatherResults)) => {
+      if (errorMessage) {
+        console.log(errorMessage);
+      } else {
+        console.log(JSON.stringify(weatherResults,undefined,2));
+      }
+    });
   }
 });
-
-// forecast.getForecast(pos, (errorMessage, resultsForecast)) => {
-//   if (errorMessage) {
-//     console.log(errorMessage);
-//   } else {
-//     console.log(`Tempo: ${resultsforecast.forecast}`);
-//   }
-// });
