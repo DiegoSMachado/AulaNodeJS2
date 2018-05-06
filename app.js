@@ -1,3 +1,6 @@
+console.log('================================================');
+console.log('               Programa do tempo');
+console.log(' ');
 const yargs = require('yargs');
 
 const geocode = require('./geocode/geocode');
@@ -8,7 +11,7 @@ const argv = yargs
     a: {
       demand: true,
       alias: 'address',
-      describe: 'Address to fetch weather for',
+      describe: 'Endereço que deseja o clima',
       string: true
     }
   })
@@ -20,13 +23,16 @@ geocode.geocodeAddress(argv.address, (errorMessage, results) => {
     console.log(errorMessage);
   } else {
     console.log(`Endereço: ${results.address}`);
-    console.log(`Latitude: ${results.latitude}`);
-    console.log(`Longitude: ${results.longitude}`);
-    forecast.getWeather(results.latitude, results.longitude, (errorMessage, weatherResults)) => {
+    console.log(`Latitude: ${results.latitude}   |   Longitude: ${results.longitude}`);
+    console.log(' ');
+    weather.getWeather (results.latitude, results.longitude, (errorMessage, weatherResults) => {
       if (errorMessage) {
         console.log(errorMessage);
       } else {
-        console.log(JSON.stringify(weatherResults,undefined,2));
+        var tempcelsius = (5 * weatherResults.temperature - 160)/9;
+        var senscelcius = (5 * weatherResults.apparentTemperature - 160)/9;
+        console.log(`A temperatura é de ${tempcelsius.toFixed(0)} °C, sensação de ${senscelcius.toFixed(0)} °C e o`);
+        console.log(`clima está ${weatherResults.summary}.`);
       }
     });
   }
