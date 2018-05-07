@@ -31,19 +31,19 @@ axios.get(geocodeUrl).then((response) => {
   } else if (response.data.status === 'OK') {
     var lat = response.data.results[0].geometry.location.lat;
     var lng = response.data.results[0].geometry.location.lng;
-    console.log(lat,lng);
     var weatherUrl = `https://api.darksky.net/forecast/331d302dbebff3758ddf9573fa80aac3/${lat},${lng}`;
-    axios.get(weatherUrl).then((weatherResponse) => {
-      console.log(response.data.results[0].formatted_address);
-      var tempcelsius = (5 * weatherResponse.currently.temperature - 160)/9;
-      var senscelcius = (5 * weatherResponse.currently.apparentTemperature - 160)/9;
+    console.log(response.data.results[0].formatted_address);
+    return axios.get(weatherUrl).then((weatherResponse) => {
+      console.log(lat,lng);
+      var tempcelsius = (5 * weatherResponse.data.currently.temperature - 160)/9;
+      var senscelcius = (5 * weatherResponse.data.currently.apparentTemperature - 160)/9;
       console.log(`A temperatura é de ${tempcelsius.toFixed(0)} °C, sensação de ${senscelcius.toFixed(0)} °C e o`);
-      console.log(`clima está ${weatherResponse.currently.summary}.`);
+      console.log(`clima está ${weatherResponse.data.currently.summary}.`);
     }).catch((e) => {
-      console.log('Não conectou ao servidor');
+      console.log('Não conectou ao servidor',e.message);
     });
   } else {
-    throw new Error (response.data.status);
+    throw new Error (e.message);
   }
 }).catch((e) => {
   if (e.code === 'ENOTFOUND') {
